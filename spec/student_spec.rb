@@ -10,14 +10,23 @@ describe Student do
     end
   end
 
-  describe '#attr_accessors' do
-    it 'should allow you to read the instance variables' do
+  describe '#name' do
+    it 'should return the name' do
       expect(student.name).to eq("Nikki")
     end
+  end
 
-    it 'should allow you to write the instance variables' do
-      student.blog = "So blog"
-      expect(student.blog).to eq("So blog")
+  describe 'twitter' do
+    it 'should return the twitter' do
+      expect(student.twitter).to eq("http://twitter.com")
+    end
+  end
+
+  describe 'blog' do
+    it 'should return the blog' do
+      expect(student.blog).to eq("http://blog.com")
     end
   end
 end
+
+# test for errors, test for returning blog and twitter and name
