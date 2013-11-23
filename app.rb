@@ -81,12 +81,16 @@ class App
     "http://twitter.com/#{twitter}"
   end
 
+  def open(url)
+    Launchy.open(url) if url_exists(url)
+  end
+
   def launch(student)
     case get_input
     when "b"
-      Launchy.open("#{student.blog}") if url_exists(student.blog)
+      open(student.blog)
     when "t"
-      Launchy.open(get_twitter_url(student)) if url_exists(student.twitter)
+      open(get_twitter_url(student))
     when "e"
       exit
     else
