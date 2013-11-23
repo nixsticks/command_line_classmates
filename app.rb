@@ -40,7 +40,11 @@ class App
   end
 
   def welcome
-    display "Print a student's name to look up the student or random to get a random blog or twitter!"
+    "Print a student's name to look up the student or random to get a random blog or twitter!"
+  end
+
+  def error
+    "Please enter the name of a student."
   end
 
   def name_lookup
@@ -54,17 +58,27 @@ class App
       students.each do |student|
         return student if student.name == name
       end
-      display "Please enter the name of a student."
+      display error
       name_lookup
     end
   end
 
+  def launch_message
+    "Print b to launch blog, t to launch twitter, e to exit."
+  end
+
   def blog_twitter(student)
-    display "\nBlog: #{student.blog} \nTwitter: #{student.twitter} \n\nPrint b to launch blog, t to launch twitter, e to exit."
+    display "\nBlog: #{student.blog} \nTwitter handle: #{student.twitter}\n\n"
+    display launch_message
   end
 
   def url_exists(site)
     true unless site == "NA"
+  end
+
+  def get_twitter_url(student)
+    twitter = student.twitter.gsub("@", "")
+    "http://twitter.com/#{twitter}"
   end
 
   def launch(student)
@@ -72,12 +86,11 @@ class App
     when "b"
       Launchy.open("#{student.blog}") if url_exists(student.blog)
     when "t"
-      twitter_url = student.twitter.gsub("@", "")
-      Launchy.open("http://twitter.com/#{twitter_url}") if url_exists(student.twitter)
+      Launchy.open(get_twitter_url(student)) if url_exists(student.twitter)
     when "e"
       exit
     else
-      display "Print b to launch blog, t to launch twitter, e to exit."
+      display launch_message
       launch(student)
     end
   end
@@ -85,12 +98,12 @@ class App
   def launch_random
     student = students.sample
     blog = student.blog if url_exists(student.blog)
-    twitter = "http://twitter.com/" + student.twitter.gsub("@", "") if url_exists(student.twitter)
+    twitter = get_twitter_url(student) if url_exists(student.twitter)
     Launchy.open("#{[blog, twitter].compact.sample}")
   end
 
   def run
-    welcome
+    display welcome
     name = name_lookup
     unless name == "random"
       blog_twitter(name)
@@ -99,5 +112,5 @@ class App
   end
 end
 
-app = App.new("http://flatironschool-bk.herokuapp.com")
+app = App.new("http://flatironschool-bk.herokuapp.com") 
 app.run
