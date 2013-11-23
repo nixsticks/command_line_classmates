@@ -1,5 +1,7 @@
+require 'awesome_print'
 require 'open-uri'
 require 'nokogiri'
+require 'ruby-debug'
 
 class Scraper
   attr_reader :html
@@ -9,14 +11,21 @@ class Scraper
   end
 
   def get_students_names
-    html.search("h3").text.split(/(?<=[a-z.])(?=[A-Z])/)
+    # html.search("h3").text.split(/(?<=[a-z.])(?=[A-Z])/)
+    html.search("h3").map {|name| name.text}
   end
 
   def get_students_twitters
-    html.css(".twitter").text.split
+    html.css(".back").collect do |twitter|
+      handle = twitter.search(".twitter")
+      handle.empty? || handle.nil? ? "NA" : handle.text.gsub(/[\s@]+/, "")
+    end
   end
 
   def get_students_blogs
-    html.search(".blog").map {|link| link['href']}
+    html.search(".back").collect do |blog|
+      blog = blog.search(".blog")
+      blog.empty? || blog.nil? ? "NA" : blog.first['href']
+    end
   end
 end
