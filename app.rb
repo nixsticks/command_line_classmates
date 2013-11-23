@@ -60,30 +60,32 @@ class App
   end
 
   def blog_twitter(student)
-    display "\nBlog: #{student.blog}, twitter: #{student.twitter}. Print b to launch blog, t to launch twitter."
+    display "\nBlog: #{student.blog} \nTwitter: #{student.twitter} \n\nPrint b to launch blog, t to launch twitter, e to exit."
   end
 
-  def check_url(site)
+  def url_exists(site)
     true unless site == "NA"
   end
 
   def launch(student)
     case get_input
-    when /b(log)?/
-      Launchy.open("#{student.blog}") if check_url(student.blog)
-    when /t(witter)?/
+    when "b"
+      Launchy.open("#{student.blog}") if url_exists(student.blog)
+    when "t"
       twitter_url = student.twitter.gsub("@", "")
-      Launchy.open("http://twitter.com/#{twitter_url}") if check_url(student.twitter)
+      Launchy.open("http://twitter.com/#{twitter_url}") if url_exists(student.twitter)
+    when "e"
+      exit
     else
-      display "Please print b or t."
-      launch
+      display "Print b to launch blog, t to launch twitter, e to exit."
+      launch(student)
     end
   end
 
   def launch_random
     student = students.sample
-    blog = student.blog if check_url(student.blog)
-    twitter = "http://twitter.com/" + student.twitter.gsub("@", "") if check_url(student.twitter)
+    blog = student.blog if url_exists(student.blog)
+    twitter = "http://twitter.com/" + student.twitter.gsub("@", "") if url_exists(student.twitter)
     Launchy.open("#{[blog, twitter].compact.sample}")
   end
 

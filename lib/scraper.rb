@@ -18,7 +18,7 @@ class Scraper
   def get_students_twitters
     html.css(".back").collect do |twitter|
       handle = twitter.search(".twitter")
-      handle.empty? || handle.nil? ? "NA" : handle.text.gsub(/[\s@]+/, "")
+      handle.empty? || handle.nil? ? "NA" : handle.text.gsub(/\s+/, "")
     end
   end
 
