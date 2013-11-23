@@ -4,94 +4,99 @@ require 'awesome_print'
 require 'ruby-debug'
 require 'launchy'
 
-class StudentMaker
-  attr_reader :scraper
-  def initialize(url)
-    @scraper = Scraper.new(url)
-  end
-
-  def scrape
+module StudentMaker
+  def scrape(url)
+    scraper = Scraper.new(url)
     names = scraper.get_students_names
     twitters = scraper.get_students_twitters
     blogs = scraper.get_students_blogs
+
     students = []
 
     28.times do |i|
-      student = Student.new(names[i], twitters[i], blogs[i])
+      student = Student.new(names[i].downcase, twitters[i], blogs[i])
       students << student
     end
+
     students
   end
 end
 
 class App
+
+  include StudentMaker
+
   attr_reader :students
 
-  def initialize
-    @students = StudentMaker.new("http://flatironschool-bk.herokuapp.com/").scrape
+  def initialize(url)
+    @students = scrape(url)
   end
 
-  def lookup_message
-    "Print a student's name to look up the student or random to get a random blog or twitter!"
+  def welcome
+    display "Print a student's name to look up the student or random to get a random blog or twitter!"
   end
 
-  def input
-    gets.chomp
+  def get_input
+    gets.chomp.downcase
   end
 
-  def get_student
-    request = input
-    # random if request == /r(andom)?/
-    students.each do |student|
-      if student.name == request
-        student
-      else
-        "Please type in the name of a student."
-        get_student
+  def display(message)
+    puts message
+  end
+
+  def name_lookup
+    name = get_input
+
+    case name
+    when /r(andom)?/
+      launch_random
+      "random"
+    else
+      students.each do |student|
+        return student if student.name == name
       end
+      display "Please enter the name of a student."
+      name_lookup
     end
   end
 
-  def blog_or_twitter(student)
-    puts "Blog: #{student.blog}; Twitter: #{student.twitter}\nPrint b to open blog, t to open twitter."
+  def blog_twitter(student)
+    display "Blog: #{student.blog}, twitter: #{student.twitter}. Print b to launch blog, t to launch twitter."
+  end
+
+  def check_url(site)
+    true unless site == "NA"
   end
 
   def launch(student)
-    case input
+    case get_input
     when /b(log)?/
-      Launchy.open(student.blog)
+      Launchy.open("#{student.blog}") if check_url(student.blog)
     when /t(witter)?/
-      twitter = "http://twitter.com/" + student.twitter.gsub(/@/, "")
-      Launchy.open(twitter)
+      twitter_url = student.twitter.gsub("@", "")
+      Launchy.open("http://twitter.com/#{twitter_url}") if check_url(student.twitter)
     else
-      "Print b to open blog, t to open twitter."
+      display "Please print b or t."
+      launch
     end
   end
 
-  def open_random
-    array = [students.sample.blog, students.sample.twitter]
-    Launchy.open("#{array.sample}")
+  def launch_random
+    student = students.sample
+    blog = student.blog if check_url(student.blog)
+    twitter = "http://twitter.com/" + student.twitter.gsub("@", "") if check_url(student.twitter)
+    Launchy.open("#{[blog, twitter].compact.sample}")
   end
 
   def run
-    puts lookup_message
-    blog_or_twitter(get_student)
-    debugger
-    launch(student)
+    welcome
+    name = name_lookup
+    unless name == "random"
+      blog_twitter(name)
+      launch(name)
+    end
   end
 end
 
-app = App.new
+app = App.new("http://flatironschool-bk.herokuapp.com")
 app.run
-
-
-#  - launches a given student's twitter
-
-#  - launches a given student's blog
-
-#  - launches a random student's twitter
-
-#  - launches a random student's blog
-
-# build whatever interface you want! i'm excited to see different implementations :)
-
