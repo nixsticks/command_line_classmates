@@ -73,7 +73,7 @@ class App
   end
 
   def url_exists(site)
-    true unless site == "NA"
+    true unless site.split("/").include?("NA")
   end
 
   def get_twitter_url(student)
@@ -101,9 +101,8 @@ class App
 
   def launch_random
     student = students.sample
-    blog = student.blog if url_exists(student.blog)
-    twitter = get_twitter_url(student) if url_exists(student.twitter)
-    Launchy.open("#{[blog, twitter].compact.sample}")
+    urls = [student.blog, get_twitter_url(student)]
+    open(urls.sample)
   end
 
   def run
