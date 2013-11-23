@@ -1,8 +1,7 @@
 require'./lib/scraper'
 require './lib/student'
-require 'awesome_print'
-require 'ruby-debug'
 require 'launchy'
+
 
 module StudentMaker
   def scrape(url)
@@ -32,10 +31,6 @@ class App
     @students = scrape(url)
   end
 
-  def welcome
-    display "Print a student's name to look up the student or random to get a random blog or twitter!"
-  end
-
   def get_input
     gets.chomp.downcase
   end
@@ -44,13 +39,17 @@ class App
     puts message
   end
 
+  def welcome
+    display "Print a student's name to look up the student or random to get a random blog or twitter!"
+  end
+
   def name_lookup
     name = get_input
 
     case name
-    when /r(andom)?/
+    when "random"
       launch_random
-      "random"
+      name
     else
       students.each do |student|
         return student if student.name == name
@@ -61,7 +60,7 @@ class App
   end
 
   def blog_twitter(student)
-    display "Blog: #{student.blog}, twitter: #{student.twitter}. Print b to launch blog, t to launch twitter."
+    display "\nBlog: #{student.blog}, twitter: #{student.twitter}. Print b to launch blog, t to launch twitter."
   end
 
   def check_url(site)
