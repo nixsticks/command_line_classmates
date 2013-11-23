@@ -4,23 +4,7 @@ require 'awesome_print'
 require 'ruby-debug'
 require 'launchy'
 
-# module StudentMaker
-#   def self.scrape(url)
-#     scraper = Scraper.new(url)
-#     names = scraper.get_students_names
-#     twitters = scraper.get_students_twitters
-#     blogs = scraper.get_students_blogs
-
-#     students = []
-
-#     28.times do |i|
-#       student = Student.new(names[i].downcase, twitters[i], blogs[i])
-#       students << student
-#     end
-#   end
-# end
-
-class App
+module StudentMaker
   def scrape(url)
     scraper = Scraper.new(url)
     names = scraper.get_students_names
@@ -33,8 +17,14 @@ class App
       student = Student.new(names[i].downcase, twitters[i], blogs[i])
       students << student
     end
+
     students
   end
+end
+
+class App
+
+  include StudentMaker
 
   attr_reader :students
 
