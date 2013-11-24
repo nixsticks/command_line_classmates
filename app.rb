@@ -58,11 +58,11 @@ class App
     end
 
     def welcome
-      "Affirmative, Dave. I read you.\n\nPrint a student's name to look up the student; random to get a random blog or twitter; e to exit at any time."
+      "Affirmative, Dave. I read you.\n\nPrint a student's name to look up the student;\nrandom to get a random blog or twitter;\ne to exit at any time."
     end
 
     def error
-      "\nI can't find that student. It can only be attributable to human error. Enter another name."
+      "\nI can't find that student.\nIt can only be attributable to human error.\nEnter another name."
     end
 
     def name_lookup
@@ -105,7 +105,7 @@ class App
       if url_exists(url)
         Launchy.open(url)
       else
-        display "\nI'm sorry, Dave. I'm afraid I can't let you do that. I think you know what the problem is just as well as I do."
+        display "\nI'm sorry, Dave. I'm afraid I can't let you do that.\nI think you know what the problem is just as well as I do."
       end
     end
 
