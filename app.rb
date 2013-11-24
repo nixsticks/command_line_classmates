@@ -1,5 +1,6 @@
 require_relative './lib/scraper'
 require_relative './lib/student'
+require 'awesome_print'
 require 'launchy'
 
 
@@ -8,13 +9,14 @@ module StudentMaker
     scraper = Scraper.new(url)
     names = scraper.get_students_names
     first_names = scraper.get_first_names
+    last_names = scraper.get_last_names
     twitters = scraper.get_students_twitters
     blogs = scraper.get_students_blogs
 
     students = []
 
     28.times do |i|
-      student = Student.new(names[i].downcase, first_names[i].downcase, twitters[i], blogs[i])
+      student = Student.new(names[i].downcase, first_names[i].downcase, last_names[i].downcase, twitters[i], blogs[i])
       students << student
     end
 
@@ -74,7 +76,7 @@ class App
         exit
       else
         students.each do |student|
-          return student if student.name == name || student.first_name == name
+          return student if student.name == name || student.first_name == name || student.last_name == name
         end
       end
       display error

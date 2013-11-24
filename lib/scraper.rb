@@ -15,10 +15,16 @@ class Scraper
   end
 
   def get_first_names
-    names = html.search("h3").map {|name| name.text}
-    names.map do |name|
+    get_students_names.map do |name|
       first_name = /^(\w+\b)/.match(name)
-      first_name[0]
+      first_name[1]
+    end
+  end
+
+  def get_last_names
+    get_students_names.map do |name|
+      last_name = /^\w*\s(\w+'?\w*\b)/.match(name)
+      last_name[1]
     end
   end
 
