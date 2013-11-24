@@ -71,7 +71,7 @@ class App
       case name
       when /^r(andom)?$/
         launch_random
-        return name
+        return "random"
       when /^e(xit)?$/
         exit
       else
