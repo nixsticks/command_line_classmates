@@ -11,8 +11,15 @@ class Scraper
   end
 
   def get_students_names
-    # html.search("h3").text.split(/(?<=[a-z.])(?=[A-Z])/)
     html.search("h3").map {|name| name.text}
+  end
+
+  def get_first_names
+    names = html.search("h3").map {|name| name.text}
+    names.map do |name|
+      first_name = /^(\w+\b)/.match(name)
+      first_name[0]
+    end
   end
 
   def get_students_twitters
