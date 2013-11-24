@@ -1,5 +1,6 @@
-require'./lib/scraper'
-require './lib/student'
+require_relative './lib/scraper'
+require_relative './lib/student'
+require 'ruby-debug'
 require 'launchy'
 
 
@@ -40,7 +41,7 @@ class App
   end
 
   def welcome
-    "Print a student's name to look up the student or random to get a random blog or twitter!"
+    "Affirmative, Dave. I read you.\n\nPrint a student's name to look up the student; random to get a random blog or twitter; e to exit at any time."
   end
 
   def error
@@ -51,20 +52,22 @@ class App
     name = get_input
 
     case name
-    when "random"
+    when /^r(andom)?$/
       launch_random
-      name
+      return name
+    when /^e(xit)?$/
+      exit
     else
       students.each do |student|
         return student if student.name == name
       end
-      display error
-      name_lookup
     end
+    display error
+    name_lookup
   end
 
   def launch_message
-    "Print b to launch blog, t to launch twitter, e to exit."
+    "Print b to launch blog, t to launch twitter."
   end
 
   def blog_twitter(student)
@@ -82,7 +85,11 @@ class App
   end
 
   def open(url)
-    Launchy.open(url) if url_exists(url)
+    if url_exists(url)
+      Launchy.open(url)
+    else
+      display "\nI'm sorry, Dave. I'm afraid I can't let you do that. I think you know what the problem is just as well as I do.\n\n"
+    end
   end
 
   def launch(student)
@@ -105,12 +112,33 @@ class App
     open(urls.sample)
   end
 
+  def rerun_message
+    "Look up another student?"
+  end
+
+  def rerun
+    case get_input
+    when /^y(es)?$/
+      return
+    when /^no?$/
+      exit
+    else
+      display "Please type yes or no."
+      rerun
+    end
+  end
+
   def run
-    display welcome
-    name = name_lookup
-    unless name == "random"
-      blog_twitter(name)
-      launch(name)
+    loop do
+      display welcome
+      name = name_lookup
+      unless name == "random"
+        blog_twitter(name)
+        launch(name)
+      end
+      display rerun_message
+      rerun
+      puts
     end
   end
 end
