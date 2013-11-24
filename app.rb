@@ -84,7 +84,7 @@ class App
     end
 
     def launch_message
-      "Print b to launch blog, t to launch twitter."
+      "Print b to launch blog, t to launch twitter, c to cancel."
     end
 
     def blog_twitter(student)
@@ -115,6 +115,8 @@ class App
         open(student.blog)
       when "t"
         open(get_twitter_url(student))
+      when "c"
+        return
       when "e"
         exit
       else
