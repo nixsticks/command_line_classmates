@@ -35,16 +35,14 @@ class App
   end
 
   def run
+    display welcome
     loop do
-      display welcome
       name = name_lookup
       unless name == "random"
         blog_twitter(name)
         launch(name)
       end
       display rerun_message
-      rerun
-      puts
     end
   end
 
@@ -132,20 +130,6 @@ class App
 
     def rerun_message
       "\nLook up another student?"
-    end
-
-    def rerun
-      case get_input
-      when /^y(es)?$/
-        return
-      when /^no?$/
-        exit
-      when /^e(xit)?$/
-        exit
-      else
-        display "Please type yes or no."
-        rerun
-      end
     end
 end
 
