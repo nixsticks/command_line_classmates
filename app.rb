@@ -89,7 +89,6 @@ class App
 
     def blog_twitter(student)
       display "\nBlog: #{student.blog} \nTwitter handle: #{student.twitter}\n\n"
-      display launch_message
     end
 
     def url_exists(site)
@@ -110,6 +109,7 @@ class App
     end
 
     def launch(student)
+      display launch_message
       case get_input
       when "b"
         open(student.blog)
@@ -120,7 +120,6 @@ class App
       when "e"
         exit
       else
-        display launch_message
         launch(student)
       end
     end
